@@ -1,0 +1,331 @@
+/**********************************************
+ * Styling for pbernicc's Telehack Profile.
+ * Based on happydog's version on GitHub...
+ *
+ * ...which itself is  based on Strong Bad's 
+ * original Tandy 400 and a respectful homage to 
+ * that great piece of internet history.
+ *
+ * CSS by happydog@telehack
+ * All image resources (c) homestarrunner.com,
+ * used without permission.
+ **********************************************
+ */
+
+/* Ensure the wrapper HTML element defines the whole page area that we will be
+ * working with (in particular, we need the height set to 100%).
+ */
+	html {
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+
+	/* Set the page background to black.  This is required even though we also set
+	 * this on the body, as the body doesn't take up the full browser screen in a
+	 * lot of cases.  Without this, the scanlines will be visible in the black areas
+	 * outside of the main image.
+	 */
+		background-color: #000000;
+
+	/* Indicate that we are using a 'dark' colour scheme.  This improves the
+	 * appearance of scroll bars, on browsers that support it.
+	 * Browsers that don't support this setting will use the browser's native scroll
+	 * bars in all cases (unless they autodect based on body background, as is the
+	 * case on Firefox >=72 and < 96).
+	 */
+		color-scheme: dark;
+	}
+
+/* Style the various block elements that all need to be sized/positioned to match
+ * the computed size of the monitor.
+ */
+	body,
+	body::before,
+	body::after {
+	/* Horizontally center the screen.
+	 * TODO: Can we (do we want to?) vertically center it, too (for
+	 *		 portrait-orientated browser windows)?
+	 */
+		margin: 0 auto;
+
+	/* Set the width and height values so that we maintain aspect ratio.
+	 * The height is set to 100% so that we fill the full vertical area and the width
+	 * is set as a proportion of the height in order to maintain aspect ratio.
+	 * The max-width and max-height are set to ensure that no content is outside of
+	 * the viewport when the window's aspect ratio does not match the images (which
+	 * will normally be the case).  We cap the width at 100% to avoid horizontal
+	 * spill and we cap the height in proportion to the width so that it is never
+	 * larger than the height mandated to maintain aspect ratio with the current
+	 * width.
+	 * The ratio is defined by the nominal width/height of the SVG (584 x 443), which
+	 * matches the original animation assets.  This gives an aspect ratio of 1.318.
+	 */
+		height: 100%;
+		width: 131.8vh;
+
+		max-height: 76vw;
+		max-width: 100%;
+
+	/* We set some minimums, too, so it doesn't shrink away to nothing.
+	 * These settings match the nominal size of the SVG, which matches the original
+	 * animation assets, but they could be reduced a bit if that is still legible
+	 * enough on smaller screens.
+	 */
+		min-width: 584px;
+		min-height: 443px;
+	}
+
+/* The body element sits above the screen background, which is in body::before, and
+ * below the screen contents, in the <pre> tag.
+ * This is where we add the scanlines.
+ */
+	body {
+	/* Remove any padding from the body, so it doesn't throw the layout. */
+		padding: 0;
+
+	/* Set the body colour here (rather than in the <html> tag), to override the
+	 * styling that the source applies to the <body> tag.
+	 */
+		color: #00B900;
+
+	/* Set the body background color to black, to force a 'dark theme' on browsers
+	 * that do magic colour sniffing (e.g. Firefox >= v72) but which don't suppor the
+	 * color-theme CSS attribute, which we set above.  If the browser detects a
+	 * dark theme, then the scroll bars will be adapted to an alternative, darker
+	 * appearance, which suits our use much better.
+	 * For browsers that don't support this, setting the background here makes no
+	 * difference and the standard browser scrollbar styling will be used.
+	 */
+		background-color: #000000;
+
+	/* The scanlines are implemented as an animated GIF image. */
+		background-image: url("scanlines.gif");
+
+	/* Set a non-static position property so that child elements can be positioned
+	 * relative to this element.
+	 */
+		position: relative;
+	}
+
+/* Create and position the pseudo-elements that will contain parts of the
+ * visuals.
+ * The 'before' element sits behind the text and provides the background screen
+ * effects.  (We can't simply apply these to the <pre> tag as that may not cover
+ * the whole of the screen area).
+ * The 'after' element sits on top of the text, and is the main monitor graphic.
+ */
+	body::before,
+	body::after {
+	/* Create the empty block-level element. */
+		content: "";
+		display: block;
+
+	/* Position the element at the top of the screen and make it fixed, so it
+	 * doesn't move if the contents needs to scroll.
+	 */
+		top: 0;
+		position: fixed;
+	}
+
+/* Provide the screen background tint, as contrast is adjusted. */
+	body::before {
+	/* The background is green-coloured, but will only become visible if the user
+	 * adjustst the contrast.
+	 */
+		background-color: #339900;
+
+	/* Default opacity (fully transparent).
+	 * Opacity is a linear increase from 0 to 65% with 10 intervening grades (12
+	 * steps including the end points).  It is set by adding an appropriate class
+	 * to the body tag.  The relevant selectors for each of these opacity values
+	 * is given below.
+	 */
+		opacity: 0;
+	}
+
+	body.Contrast2::before {
+		opacity: 0.06;
+	}
+
+	body.Contrast3::before {
+		opacity: 0.12;
+	}
+
+	body.Contrast4::before {
+		opacity: 0.18;
+	}
+
+	body.Contrast5::before {
+		opacity: 0.24;
+	}
+
+	body.Contrast6::before {
+		opacity: 0.30;
+	}
+
+	body.Contrast7::before {
+		opacity: 0.35;
+	}
+
+	body.Contrast8::before {
+		opacity: 0.41;
+	}
+
+	body.Contrast9::before {
+		opacity: 0.47;
+	}
+
+	body.Contrast10::before {
+		opacity: 0.53;
+	}
+
+	body.Contrast11::before {
+		opacity: 0.59;
+	}
+
+	body.Contrast12::before {
+		opacity: 0.65;
+	}
+
+/* Set the screen foreground, which contains the monitor graphic. */
+	body::after {
+		z-index: 1;
+
+	/* Set image file.  SVG image, so scales with high definition. */
+		background-image: url("iigs-woz.png");
+		background-repeat: no-repeat;
+
+	/* Set image position and size so that it occupies the whole div. */
+		background-size: 100% 100%;
+	}
+
+/* Size and position the screen contents (i.e. the original <pre> tag) so that it
+ * fits within the visible screen area, at all sizes.
+ * We also style the contents to look how we want them to.
+ */
+	pre {
+	/****** POSITION ******/
+	/* Position the div so that it fits within the screen area, at all screen
+	 * sizes.  As the <div> is contained by the already-sized <body> element,
+	 * we can use percentages to give a consistent size relative to the image.
+	 * Note that font size does not adjust to the screen, as we want it to remain
+	 * legible at all window sizes.
+	 * TODO: Alternative styling approaches would place the scrollbars on the
+	 *		 whole page (in the usual way) rather than within the screen area.
+	 *		 However, I had difficulty getting the positioning to work in this
+	 *		 situation, as the screen resized.  I suspect there's a way I could
+	 *		 get it to work so that all requirements are met, with a bit of extra
+	 *		 fiddling, but for now I've kept it simple but with sub-optimal scroll
+	 *		 positioning.
+	 */
+		position: relative;
+
+		width: 73%;
+		height: 67%;
+
+		top: 12%;
+		left: 14%;
+
+	/* No margin, please. */
+		margin: 0;
+
+	/* Bring to front - if we fix the scrollbar location, this may not be
+	 * necessary, but until then it is required in order to make the content
+	 * accessible.
+	 */
+		z-index: 100;
+
+	/****** CONTENTS ******/
+
+	/* Allow content to scroll.
+	 * We enable wrapping when necessary, to ensure we never need horizontal
+	 * scroll bars.
+	 */
+		overflow: auto;
+		white-space: pre-wrap;
+
+	/* Set the font for the text.
+	 * The original Strong Bad font was Westminster, but this looks awful in this
+	 * context, primarily because it's not a proper monospaced font.
+	 * Instead we use good-old Courier.
+	 * The font string is very similar to the default defined in the original page,
+	 * but (a) this protects against changes; and (b) it adds Nimbus Mono as an
+	 * alternative for Linux systems which (historically, at least) may not have
+	 * had the Courier fonts available.
+	 * The font-size setting is included in order to override the explicit font
+	 * size set in the main document.  We set it slightly smaller than default to
+	 * reduce the likelihood of wrapping.
+	 */
+		font-family: "Courier New", Courier, "Nimbus Mono L", monospace;
+		font-size: 0.9em;
+	}
+
+/* Contrast buttons - positioning only.
+ * They are invisible (the image is on the layer below) and any interactions are
+ * done via JavaScript.
+ * Note that these elements are not part of the default page; they are added by
+ * JavaScript.  However, as they only have a purpose when JS is enabled, this is not
+ * an issue.
+ */
+	#ContrastUp,
+	#ContrastDown {
+	/* Use 'absolute' positioning, which uses absolute values relative to the
+	 * containing element (the <body> tag).  As this tag is already sized to the
+	 * main image, all our positioning values should be percentages relative to the
+	 * main computer image.  This way the layout will automatically adjust for any
+	 * browser size.
+	 */
+		position: absolute;
+
+	/* Set width, height and vertical positioning, which is the same for both
+	 * buttons.  The horizontal position is set for each button, individually.
+	 */
+		bottom: 10%;
+		width: 5%;
+		height: 5.2%;
+
+	/* Set a high z-index so trigger areas are always above any graphical
+	 * elements.
+	 */
+		z-index: 1000;
+
+	/* Show the hand-cursor, to clue the interaction. */
+		cursor: pointer;
+	}
+
+	#ContrastDown {
+		left: 11.5%;
+	}
+
+	#ContrastUp {
+		left: 17.2%;
+	}
+
+/* The screen shine is a little extra effect, present in the original animations.
+ * Due to the very scant source markup and the fact I've used up all the useful
+ * pseudo-elements, this element is added using JavaScript.
+ * Therefore, without JavaScript, this little extra touch will be missing.
+ */
+	#ScreenShine {
+	/* Use 'absolute' positioning, which uses absolute values relative to the
+	 * containing element (the <body> tag).  As this tag is already sized to the
+	 * main image, all our positioning values should be percentages relative to the
+	 * main computer image.  This way the layout will automatically adjust for any
+	 * browser size.
+	 */
+		position: absolute;
+
+		top: 11%;
+		left: 13%;
+		width: 17.2%;
+		height: 14.8%;
+
+	/* Bring the element above the text. */
+		z-index: 200;
+
+	/* Set the image to occupy the whole element. */
+		background-image: url("screenshine.svg");
+		background-repeat: no-repeat;
+		background-position: 0 0;
+	}
