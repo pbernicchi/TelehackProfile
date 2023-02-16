@@ -4,7 +4,7 @@
 
 // The path to the page's CSS file.
 // TODO: Dynamically create the URL, relative to this JS file.
-	var PATH_CSSFile = "https://github.com/pbernicchi/TelehackProfile/blob/master/pbernicc.css";
+	var PATH_CSSFile = "https://pbernicchi.github.io/pbernicc.css";
 
 ///////////////////////////////
 // LOAD STYLESHEET
