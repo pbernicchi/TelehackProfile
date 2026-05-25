@@ -1,15 +1,16 @@
-// pbernicc TelehackProfile — NeXT MegaPixel Display
+// pbernicc TelehackProfile — NeXT MegaPixel Display (photo overlay)
 // Drop-in replacement for the <script> at the bottom of telehack.com/u/pbernicc
 // Served from: https://pbernicchi.github.io/TelehackProfile/loader.js
 
 (function () {
   'use strict';
 
-  var CSS_URL = 'https://pbernicchi.github.io/TelehackProfile/pbernicc.css';
-  var MIN_B   = 0.25;
-  var MAX_B   = 1.05;
+  var BASE     = 'https://pbernicchi.github.io/TelehackProfile/';
+  var CSS_URL  = BASE + 'pbernicc.css';
+  var IMG_URL  = BASE + 'next_monitor.png';
+  var MIN_B    = 0.25;
+  var MAX_B    = 1.05;
   var brightness  = 0.90;
-  var knobDeg     = 0;   // current knob rotation in degrees
 
   // ── Inject stylesheet ──────────────────────────────────────────────────────
   var link = document.createElement('link');
@@ -22,7 +23,6 @@
   var pre = document.querySelector('pre');
   if (!pre) return;
   var content = pre.cloneNode(true);
-  // Remove any <script> tags from the cloned content
   Array.prototype.forEach.call(content.querySelectorAll('script'), function (s) {
     s.parentNode.removeChild(s);
   });
@@ -35,108 +35,61 @@
     return e;
   }
 
-  // ── Build monitor shell ─────────────────────────────────────────────────────
-  var wrapper    = el('div', 'next-wrapper');
-  var monitor    = el('div', 'next-monitor');
-  var screenArea = el('div', 'next-screen-area');
-  var vignette   = el('div', 'next-vignette');
-  var scanlines  = el('div', 'next-scanlines');
-  var glare      = el('div', 'next-glare');
+  // ── Build layout ─────────────────────────────────────────────────────────────
+  //
+  //  #next-stage          — full viewport, dark room background
+  //    #next-scene        — photo-sized container (max 900px wide, aspect 1:1)
+  //      #next-screen     — positioned behind the photo, fills the screen hole
+  //        #next-scanlines
+  //        #next-vignette
+  //        #next-content  — the actual <pre> text
+  //      #next-photo      — the monitor PNG (transparent bg + screen hole)
+  //      #next-glare      — glass specular, covers screen hole area only
+  //      #next-knob-hit   — invisible drag target over physical knob area
 
-  // NeXTSTEP Terminal.app window
-  var win        = el('div', 'next-window');
-  var titlebar   = el('div', 'next-titlebar');
-  var btnClose   = el('div', null, 'next-btn next-btn-close');
-  var btnMini    = el('div', null, 'next-btn next-btn-mini');
-  var titleText  = el('div', 'next-title-text');
-  titleText.textContent = 'Terminal — pbernicc@telehack.com — 80×40';
-  var btnResize  = el('div', null, 'next-btn next-btn-resize');
+  var stage   = el('div', 'next-stage');
+  var scene   = el('div', 'next-scene');
 
-  titlebar.appendChild(btnClose);
-  titlebar.appendChild(btnMini);
-  titlebar.appendChild(titleText);
-  titlebar.appendChild(btnResize);
-
+  // Screen area (behind photo)
+  var screen  = el('div', 'next-screen');
+  var sclines = el('div', 'next-scanlines');
+  var vignette= el('div', 'next-vignette');
   var contentArea = el('div', 'next-content');
   contentArea.appendChild(content);
+  screen.appendChild(sclines);
+  screen.appendChild(vignette);
+  screen.appendChild(contentArea);
 
-  win.appendChild(titlebar);
-  win.appendChild(contentArea);
+  // Photo overlay
+  var photo = el('img', 'next-photo');
+  photo.src = IMG_URL;
+  photo.alt = '';
 
-  screenArea.appendChild(win);
-  screenArea.appendChild(vignette);
-  screenArea.appendChild(scanlines);
-  screenArea.appendChild(glare);
+  // Glass glare (over screen hole only)
+  var glare = el('div', 'next-glare');
 
-  // ── Bottom bezel ────────────────────────────────────────────────────────────
-  var bottomBezel = el('div', 'next-bottom-bezel');
+  // Invisible knob drag target (bottom-right area of bezel)
+  var knobHit = el('div', 'next-knob-hit');
 
-  // NeXT logo block
-  var logoWrap  = el('div', 'next-logo');
-  var logoCube  = el('div', 'next-logo-cube');
-  // Cube faces built via child divs (top, front, side)
-  var cubeFront = el('div', null, 'next-cube-front');
-  var cubeTop   = el('div', null, 'next-cube-top');
-  var cubeSide  = el('div', null, 'next-cube-side');
-  logoCube.appendChild(cubeFront);
-  logoCube.appendChild(cubeTop);
-  logoCube.appendChild(cubeSide);
+  scene.appendChild(screen);
+  scene.appendChild(photo);
+  scene.appendChild(glare);
+  scene.appendChild(knobHit);
+  stage.appendChild(scene);
 
-  var logoText  = el('div', 'next-logo-text');
-  // Faithful NeXT wordmark: "N" "e" "X" "T" — note lowercase e
-  logoText.innerHTML = 'N<span class="next-logo-e">e</span>XT';
-
-  logoWrap.appendChild(logoCube);
-  logoWrap.appendChild(logoText);
-
-  // Model tag
-  var modelTag = el('div', 'next-model');
-  modelTag.textContent = 'N4000A  MegaPixel Display';
-
-  // Controls: power LED + brightness knob
-  var controls       = el('div', 'next-controls');
-  var powerLed       = el('div', 'next-power-led');
-  var knobWrap       = el('div', 'next-knob-wrap');
-  var brightnessKnob = el('div', 'next-brightness-knob');
-  var knobLabel      = el('div', 'next-knob-label');
-  knobLabel.textContent = 'BRIGHTNESS';
-  knobWrap.appendChild(brightnessKnob);
-  knobWrap.appendChild(knobLabel);
-  controls.appendChild(powerLed);
-  controls.appendChild(knobWrap);
-
-  bottomBezel.appendChild(logoWrap);
-  bottomBezel.appendChild(modelTag);
-  bottomBezel.appendChild(controls);
-  monitor.appendChild(screenArea);
-  monitor.appendChild(bottomBezel);
-
-  // ── Stand ───────────────────────────────────────────────────────────────────
-  var standNeck = el('div', 'next-stand-neck');
-  var standBase = el('div', 'next-stand-base');
-
-  wrapper.appendChild(monitor);
-  wrapper.appendChild(standNeck);
-  wrapper.appendChild(standBase);
-
-  // ── Replace page body ───────────────────────────────────────────────────────
   document.body.innerHTML = '';
-  document.body.appendChild(wrapper);
+  document.body.appendChild(stage);
 
-  // ── Brightness control (drag knob up/down) ──────────────────────────────────
+  // ── Brightness control ──────────────────────────────────────────────────────
   function applyBrightness() {
-    // map brightness [MIN_B..MAX_B] → knob rotation [-130°..130°]
-    var t      = (brightness - MIN_B) / (MAX_B - MIN_B);
-    knobDeg    = -130 + t * 260;
-    brightnessKnob.style.transform = 'rotate(' + knobDeg + 'deg)';
-    screenArea.style.filter        = 'brightness(' + brightness + ')';
+    screen.style.filter = 'brightness(' + brightness + ')';
   }
 
-  var dragging    = false;
-  var dragStartY  = 0;
-  var dragStartB  = brightness;
+  var dragging   = false;
+  var dragStartY = 0;
+  var dragStartB = brightness;
 
-  brightnessKnob.addEventListener('mousedown', function (e) {
+  knobHit.addEventListener('mousedown', function (e) {
     dragging   = true;
     dragStartY = e.clientY;
     dragStartB = brightness;
@@ -158,19 +111,18 @@
     }
   });
 
-  // Double-click knob resets brightness
-  brightnessKnob.addEventListener('dblclick', function () {
+  knobHit.addEventListener('dblclick', function () {
     brightness = 0.90;
     applyBrightness();
   });
 
   applyBrightness();
 
-  // ── Power-on boot animation ─────────────────────────────────────────────────
-  monitor.classList.add('next-booting');
+  // ── Power-on animation ──────────────────────────────────────────────────────
+  scene.classList.add('next-booting');
   setTimeout(function () {
-    monitor.classList.remove('next-booting');
-    monitor.classList.add('next-on');
+    scene.classList.remove('next-booting');
+    scene.classList.add('next-on');
   }, 1100);
 
 }());
