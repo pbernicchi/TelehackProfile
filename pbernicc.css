@@ -20,24 +20,25 @@ html, body {
     radial-gradient(ellipse 60% 55% at 50% 42%, #1a1510 0%, #0a0806 55%, #000 100%);
 }
 
-/* ── Scene: photo-sized square container ─────────────────────────────────── */
+/* ── Scene: photo-sized container matching monitor aspect ratio ────────────── */
 #next-scene {
   position: relative;
-  width: min(96vw, 90vh);
-  aspect-ratio: 1 / 1;
+  /* 1440×1569 cropped PNG: 1507/1642 native ratio */
+  height: min(96vh, 88vw);
+  aspect-ratio: 1507 / 1642;
 }
 
 /* ── Screen area: sits behind the photo, fills the transparent screen hole ─ */
-/*   Screen hole coords (% of 2160×2160 image):                              */
-/*     left=26.620%  top=20.046%  width=46.389%  height=37.963%              */
+/*   Screen hole coords recalculated from cropped 1507×1642 PNG:             */
+/*     left=16.324%  top=12.850%  width=66.490%  height=49.939%              */
 #next-screen {
   position: absolute;
-  left:   26.620%;
-  top:    20.046%;
-  width:  46.389%;
-  height: 37.963%;
+  left:   16.324%;
+  top:    12.850%;
+  width:  66.490%;
+  height: 49.939%;
   overflow: hidden;
-  background: #0d1a0d;
+  background: #000;
   box-shadow: inset 0 0 40px rgba(0,255,60,0.08), inset 0 0 8px rgba(0,0,0,0.9);
   border-radius: 1.5%;
   z-index: 1;
@@ -50,7 +51,7 @@ html, body {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0px, transparent 2px,
-    rgba(0,0,0,0.28) 2px, rgba(0,0,0,0.28) 3px
+    rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px
   );
   pointer-events: none;
   z-index: 3;
@@ -80,11 +81,11 @@ html, body {
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: clamp(5px, 1.05vw, 11px);
   line-height: 1.22;
-  color: #33ff66;
+  color: #e8e8e8;
   white-space: pre;
   background: transparent;
   border: none;
-  text-shadow: 0 0 6px rgba(51,255,102,0.5), 0 0 2px rgba(51,255,102,0.3);
+  text-shadow: none;
 }
 
 /* ── Photo overlay ────────────────────────────────────────────────────────── */
@@ -101,10 +102,10 @@ html, body {
 /* ── Glass glare (over screen area only) ─────────────────────────────────── */
 #next-glare {
   position: absolute;
-  left:   26.620%;
-  top:    20.046%;
-  width:  46.389%;
-  height: 37.963%;
+  left:   16.324%;
+  top:    12.850%;
+  width:  66.490%;
+  height: 49.939%;
   pointer-events: none;
   z-index: 11;
   border-radius: 1.5%;
@@ -122,16 +123,16 @@ html, body {
     );
 }
 
-/* ── Knob drag hit area ─────────────────────────────────────────────────────── */
+/* ── Knob drag hit area — over the bottom-center bezel controls ─────────────── */
 #next-knob-hit {
   position: absolute;
-  left:  77%;
+  left:  40%;
   top:   64%;
-  width: 11%;
-  height: 13%;
+  width: 20%;
+  height: 9%;
   cursor: ns-resize;
   z-index: 20;
-  border-radius: 50%;
+  border-radius: 8px;
 }
 
 /* ── Power-on animation ─────────────────────────────────────────────────────── */
