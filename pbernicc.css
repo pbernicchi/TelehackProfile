@@ -1,331 +1,623 @@
-/**********************************************
- * Styling for pbernicc's Telehack Profile.
- * Based on happydog's version on GitHub...
- *
- * ...which itself is  based on Strong Bad's 
- * original Tandy 400 and a respectful homage to 
- * that great piece of internet history.
- *
- * CSS by happydog@telehack
- * All image resources (c) homestarrunner.com,
- * used without permission.
- **********************************************
- */
+/* ============================================================
+   pbernicc.css — NeXT MegaPixel Display profile skin
+   Faithful recreation of the NeXT N4000A monitor (1988)
+   ============================================================ */
 
-/* Ensure the wrapper HTML element defines the whole page area that we will be
- * working with (in particular, we need the height set to 100%).
- */
-	html {
-		height: 100%;
-		width: 100%;
-		margin: 0;
-		padding: 0;
+/* ── Reset & base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-	/* Set the page background to black.  This is required even though we also set
-	 * this on the body, as the body doesn't take up the full browser screen in a
-	 * lot of cases.  Without this, the scanlines will be visible in the black areas
-	 * outside of the main image.
-	 */
-		background-color: #000000;
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  /* Dark workstation room, ambient light from the screen */
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%,
+      rgba(0, 255, 65, 0.012) 0%,
+      transparent 60%),
+    radial-gradient(ellipse at 50% 0%,
+      #141210 0%,
+      #0a0806 50%,
+      #060402 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
 
-	/* Indicate that we are using a 'dark' colour scheme.  This improves the
-	 * appearance of scroll bars, on browsers that support it.
-	 * Browsers that don't support this setting will use the browser's native scroll
-	 * bars in all cases (unless they autodect based on body background, as is the
-	 * case on Firefox >=72 and < 96).
-	 */
-		color-scheme: dark;
-	}
+/* ── Page wrapper ─────────────────────────────────────────── */
+#next-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px 80px;
+  width: 100%;
+  max-width: 960px;
+}
 
-/* Style the various block elements that all need to be sized/positioned to match
- * the computed size of the monitor.
- */
-	body,
-	body::before,
-	body::after {
-	/* Horizontally center the screen.
-	 * TODO: Can we (do we want to?) vertically center it, too (for
-	 *		 portrait-orientated browser windows)?
-	 */
-		margin: 0 auto;
+/* ── Monitor housing ──────────────────────────────────────── */
+/*
+   The NeXT MegaPixel Display had a very characteristic matte
+   black ABS plastic housing with clean geometric lines.
+   The colour is specifically "NeXT Black" — a deep, slightly
+   warm anthracite, NOT pure #000.
+*/
+#next-monitor {
+  width: 100%;
+  position: relative;
+  border-radius: 20px 20px 12px 12px;
+  padding: 22px 22px 60px 22px;
 
-	/* Set the width and height values so that we maintain aspect ratio.
-	 * The height is set to 100% so that we fill the full vertical area and the width
-	 * is set as a proportion of the height in order to maintain aspect ratio.
-	 * The max-width and max-height are set to ensure that no content is outside of
-	 * the viewport when the window's aspect ratio does not match the images (which
-	 * will normally be the case).  We cap the width at 100% to avoid horizontal
-	 * spill and we cap the height in proportion to the width so that it is never
-	 * larger than the height mandated to maintain aspect ratio with the current
-	 * width.
-	 * The ratio is defined by the nominal width/height of the SVG (584 x 443), which
-	 * matches the original animation assets.  This gives an aspect ratio of 1.318.
-	 */
-		height: 100%;
-		width: 131.8vh;
+  /* Layered housing gradients: top-left bounce light + main body */
+  background:
+    radial-gradient(ellipse 55% 30% at 12% 6%,
+      rgba(255, 255, 255, 0.036) 0%,
+      transparent 100%),
+    linear-gradient(
+      152deg,
+      #302e2a  0%,
+      #232120  18%,
+      #181614  45%,
+      #141210  65%,
+      #1a1816  85%,
+      #201e1a  100%
+    );
 
-		max-height: 76vw;
-		max-width: 100%;
+  /* Physically accurate shadow stack */
+  box-shadow:
+    /* Ground shadow */
+    0  50px 100px rgba(0, 0, 0, 0.96),
+    0  25px  55px rgba(0, 0, 0, 0.85),
+    0   8px  20px rgba(0, 0, 0, 0.70),
+    /* Top highlight edge (ceiling bounce) */
+    inset 0  1px 0   rgba(255, 255, 255, 0.08),
+    inset 0  2px 0   rgba(255, 255, 255, 0.03),
+    /* Left edge highlight */
+    inset  1px 0 0   rgba(255, 255, 255, 0.035),
+    /* Right edge (less light) */
+    inset -1px 0 0   rgba(255, 255, 255, 0.015),
+    /* Inner depth cavity */
+    inset 0 -3px 10px rgba(0, 0, 0, 0.55);
+}
 
-	/* We set some minimums, too, so it doesn't shrink away to nothing.
-	 * These settings match the nominal size of the SVG, which matches the original
-	 * animation assets, but they could be reduced a bit if that is still legible
-	 * enough on smaller screens.
-	 */
-		min-width: 584px;
-		min-height: 443px;
-	}
+/* Thin chrome lip at the very top edge */
+#next-monitor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent        0%,
+    rgba(255,255,255,0.10) 20%,
+    rgba(255,255,255,0.16) 50%,
+    rgba(255,255,255,0.10) 80%,
+    transparent       100%
+  );
+  border-radius: 20px 20px 0 0;
+}
 
-/* The body element sits above the screen background, which is in body::before, and
- * below the screen contents, in the <pre> tag.
- * This is where we add the scanlines.
- */
-	body {
-	/* Remove any padding from the body, so it doesn't throw the layout. */
-		padding: 0;
+/* Subtle matte texture overlay */
+#next-monitor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
 
-	/* Set the body colour here (rather than in the <html> tag), to override the
-	 * styling that the source applies to the <body> tag.
-	 */
-		color: #00B900;
+/* ── Screen area (CRT face behind glass) ──────────────────── */
+#next-screen-area {
+  position: relative;
+  background: #000;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3; /* NeXT MegaPixel Display is 4:3 (1120×832) */
 
-	/* Set the body background color to black, to force a 'dark theme' on browsers
-	 * that do magic colour sniffing (e.g. Firefox >= v72) but which don't suppor the
-	 * color-theme CSS attribute, which we set above.  If the browser detects a
-	 * dark theme, then the scroll bars will be adapted to an alternative, darker
-	 * appearance, which suits our use much better.
-	 * For browsers that don't support this, setting the background here makes no
-	 * difference and the standard browser scrollbar styling will be used.
-	 */
-		background-color: #000000;
+  box-shadow:
+    /* Deep inner shadow — the CRT tube is slightly recessed */
+    inset 0  3px 14px rgba(0, 0, 0, 0.95),
+    inset  3px 0  8px rgba(0, 0, 0, 0.80),
+    inset -3px 0  8px rgba(0, 0, 0, 0.80),
+    inset 0 -3px  8px rgba(0, 0, 0, 0.70),
+    /* The glass face has a very slight outer glow when powered */
+    0 0 0 1px #0a0a0a,
+    0 0 0 2px rgba(0,0,0,0.6);
+}
 
-	/* The scanlines are implemented as an animated GIF image. */
-		background-image: url("scanlines.gif");
+/* ── Screen overlays (in painting order) ─────────────────── */
 
-	/* Set a non-static position property so that child elements can be positioned
-	 * relative to this element.
-	 */
-		position: relative;
-	}
+/* 1. CRT edge vignette */
+#next-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 88% at 50% 50%,
+    transparent      52%,
+    rgba(0,0,0,0.10) 72%,
+    rgba(0,0,0,0.35) 88%,
+    rgba(0,0,0,0.60) 100%
+  );
+  pointer-events: none;
+  z-index: 18;
+  border-radius: 6px;
+}
 
-/* Create and position the pseudo-elements that will contain parts of the
- * visuals.
- * The 'before' element sits behind the text and provides the background screen
- * effects.  (We can't simply apply these to the <pre> tag as that may not cover
- * the whole of the screen area).
- * The 'after' element sits on top of the text, and is the main monitor graphic.
- */
-	body::before,
-	body::after {
-	/* Create the empty block-level element. */
-		content: "";
-		display: block;
+/* 2. Fine-pitch scanlines (NeXT was 832 lines — very fine) */
+#next-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent           2px,
+    rgba(0, 0, 0, 0.055) 2px,
+    rgba(0, 0, 0, 0.055) 3px
+  );
+  pointer-events: none;
+  z-index: 19;
+}
 
-	/* Position the element at the top of the screen and make it fixed, so it
-	 * doesn't move if the contents needs to scroll.
-	 */
-		top: 0;
-		position: fixed;
-	}
+/* 3. Glass glare — upper-left specular reflection */
+#next-glare {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Main specular lobe */
+    radial-gradient(
+      ellipse 65% 38% at 18% 8%,
+      rgba(255, 255, 255, 0.030) 0%,
+      rgba(255, 255, 255, 0.012) 45%,
+      transparent 70%
+    ),
+    /* Ambient wide reflection */
+    linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.018) 0%,
+      transparent               45%
+    );
+  pointer-events: none;
+  z-index: 20;
+  border-radius: 6px;
+}
 
-/* Provide the screen background tint, as contrast is adjusted. */
-	body::before {
-	/* The background is green-coloured, but will only become visible if the user
-	 * adjustst the contrast.
-	 */
-		background-color: #339900;
+/* ── NeXTSTEP Terminal.app window ─────────────────────────── */
+#next-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #020202;
+}
 
-	/* Default opacity (fully transparent).
-	 * Opacity is a linear increase from 0 to 65% with 10 intervening grades (12
-	 * steps including the end points).  It is set by adding an appropriate class
-	 * to the body tag.  The relevant selectors for each of these opacity values
-	 * is given below.
-	 */
-		opacity: 0;
-	}
+/* Title bar — NeXTSTEP 3.x dark chrome */
+#next-titlebar {
+  display: flex;
+  align-items: center;
+  padding: 0 7px;
+  gap: 5px;
+  height: 24px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
 
-	body.Contrast2::before {
-		opacity: 0.06;
-	}
+  background: linear-gradient(180deg,
+    #404040 0%,
+    #333333 40%,
+    #2a2a2a 100%
+  );
+  border-bottom: 1px solid #111;
+}
 
-	body.Contrast3::before {
-		opacity: 0.12;
-	}
+/* 1px specular on title bar top */
+#next-titlebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.13);
+}
 
-	body.Contrast4::before {
-		opacity: 0.18;
-	}
+/* NeXTSTEP window buttons — squared, not rounded */
+.next-btn {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  cursor: default;
+  border: 1px solid #1a1a1a;
+  background: linear-gradient(145deg, #555 0%, #383838 100%);
+  box-shadow:
+    inset 0  1px 0  rgba(255,255,255,0.18),
+    inset 0 -1px 0  rgba(0,0,0,0.40),
+    0 1px 2px rgba(0,0,0,0.60);
+  position: relative;
+}
 
-	body.Contrast5::before {
-		opacity: 0.24;
-	}
+/* Close — a hair warmer */
+.next-btn-close { background: linear-gradient(145deg, #585450 0%, #383532 100%); }
+/* Miniaturize */
+.next-btn-mini  { background: linear-gradient(145deg, #525250 0%, #363634 100%); }
+/* Resize */
+.next-btn-resize {
+  background: linear-gradient(145deg, #525252 0%, #363636 100%);
+  margin-left: auto; /* push to right side */
+}
 
-	body.Contrast6::before {
-		opacity: 0.30;
-	}
+/* Tiny cross on close btn */
+.next-btn-close::before,
+.next-btn-close::after {
+  content: '';
+  position: absolute;
+  background: rgba(0,0,0,0.28);
+  top: 50%; left: 50%;
+}
+.next-btn-close::before {
+  width: 7px; height: 1px;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.next-btn-close::after {
+  width: 7px; height: 1px;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
 
-	body.Contrast7::before {
-		opacity: 0.35;
-	}
+/* Title text */
+#next-title-text {
+  flex: 1;
+  text-align: center;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #c8c6c2;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06);
+}
 
-	body.Contrast8::before {
-		opacity: 0.41;
-	}
+/* ── Terminal content area ────────────────────────────────── */
+#next-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px;
+  /* Very subtle phosphor glow from the text */
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 30%,
+      rgba(0, 255, 65, 0.008) 0%,
+      transparent 70%),
+    #020202;
+}
 
-	body.Contrast9::before {
-		opacity: 0.47;
-	}
+/* Scrollbar — NeXTSTEP aesthetic */
+#next-content::-webkit-scrollbar       { width: 13px; }
+#next-content::-webkit-scrollbar-track {
+  background: #1c1c1c;
+  border-left: 1px solid #101010;
+}
+#next-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #484848 0%, #343434 100%);
+  border: 1px solid #1a1a1a;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+#next-content::-webkit-scrollbar-button {
+  background: linear-gradient(180deg, #404040 0%, #2e2e2e 100%);
+  border: 1px solid #181818;
+  height: 13px;
+}
 
-	body.Contrast10::before {
-		opacity: 0.53;
-	}
+/* The <pre> inherits Telehack's green-on-black; we only adjust spacing */
+#next-content pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  line-height: 1.55;
+  /* Preserve Telehack's font + color */
+}
 
-	body.Contrast11::before {
-		opacity: 0.59;
-	}
+/* Preserve <a> link appearance from Telehack base styles */
+#next-content a {
+  /* Telehack sets color:#0f0; we keep it */
+}
 
-	body.Contrast12::before {
-		opacity: 0.65;
-	}
+/* ── Bottom bezel ─────────────────────────────────────────── */
+#next-bottom-bezel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 26px;
+  justify-content: space-between;
+  gap: 12px;
+}
 
-/* Set the screen foreground, which contains the monitor graphic. */
-	body::after {
-		z-index: 1;
+/* Hairline separator above bezel */
+#next-bottom-bezel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 22px;
+  right: 22px;
+  height: 1px;
+  background: rgba(0,0,0,0.65);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.028);
+}
 
-	/* Set image file.  SVG image, so scales with high definition. */
-		background-image: url("iigs-woz.png");
-		background-repeat: no-repeat;
+/* ── NeXT Cube logo (CSS 3D) ──────────────────────────────── */
+#next-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  user-select: none;
+}
 
-	/* Set image position and size so that it occupies the whole div. */
-		background-size: 100% 100%;
-	}
+#next-logo-cube {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  transform-style: preserve-3d;
+}
 
-/* Size and position the screen contents (i.e. the original <pre> tag) so that it
- * fits within the visible screen area, at all sizes.
- * We also style the contents to look how we want them to.
- */
-	pre {
-	/****** POSITION ******/
-	/* Position the div so that it fits within the screen area, at all screen
-	 * sizes.  As the <div> is contained by the already-sized <body> element,
-	 * we can use percentages to give a consistent size relative to the image.
-	 * Note that font size does not adjust to the screen, as we want it to remain
-	 * legible at all window sizes.
-	 * TODO: Alternative styling approaches would place the scrollbars on the
-	 *		 whole page (in the usual way) rather than within the screen area.
-	 *		 However, I had difficulty getting the positioning to work in this
-	 *		 situation, as the screen resized.  I suspect there's a way I could
-	 *		 get it to work so that all requirements are met, with a bit of extra
-	 *		 fiddling, but for now I've kept it simple but with sub-optimal scroll
-	 *		 positioning.
-	 */
-		position: relative;
+/* Front face */
+.next-cube-front {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(145deg, #2e2c28 0%, #1c1a16 100%);
+  border: 1px solid #3a3836;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+}
 
-		width: 73%;
-		height: 67%;
+/* Top face */
+.next-cube-top {
+  position: absolute;
+  bottom: 17px;
+  left: 9px;
+  width: 18px;
+  height: 10px;
+  background: linear-gradient(135deg, #383634 0%, #222018 100%);
+  border: 1px solid #30302e;
+  transform: skewX(-45deg) scaleY(0.52);
+  transform-origin: bottom left;
+}
 
-		top: 12%;
-		left: 14%;
+/* Right face */
+.next-cube-side {
+  position: absolute;
+  bottom: 0;
+  left: 17px;
+  width: 10px;
+  height: 18px;
+  background: linear-gradient(180deg, #1a1816 0%, #0e0c0a 100%);
+  border: 1px solid #28261e;
+  transform: skewY(-45deg) scaleX(0.52);
+  transform-origin: top left;
+}
 
-	/* No margin, please. */
-		margin: 0;
+/* NeXT wordmark — N is taller, e is lowercase, XT uppercase */
+#next-logo-text {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  color: #302e2a;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.8);
+}
 
-	/* Bring to front - if we fix the scrollbar location, this may not be
-	 * necessary, but until then it is required in order to make the content
-	 * accessible.
-	 */
-		z-index: 100;
+/* The lowercase 'e' — authentic to the Paul Rand design */
+.next-logo-e {
+  text-transform: lowercase;
+  font-size: 13px;
+  vertical-align: 0.5px;
+}
 
-	/****** CONTENTS ******/
+/* Model designation */
+#next-model {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 7px;
+  font-weight: 300;
+  color: #282420;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.8;
+  flex-shrink: 0;
+}
 
-	/* Allow content to scroll.
-	 * We enable wrapping when necessary, to ensure we never need horizontal
-	 * scroll bars.
-	 */
-		overflow: auto;
-		white-space: pre-wrap;
+/* ── Controls: LED + brightness knob ─────────────────────── */
+#next-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-	/* Set the font for the text.
-	 * The original Strong Bad font was Westminster, but this looks awful in this
-	 * context, primarily because it's not a proper monospaced font.
-	 * Instead we use good-old Courier.
-	 * The font string is very similar to the default defined in the original page,
-	 * but (a) this protects against changes; and (b) it adds Nimbus Mono as an
-	 * alternative for Linux systems which (historically, at least) may not have
-	 * had the Courier fonts available.
-	 * The font-size setting is included in order to override the explicit font
-	 * size set in the main document.  We set it slightly smaller than default to
-	 * reduce the likelihood of wrapping.
-	 */
-		font-family: "Courier New", Courier, "Nimbus Mono L", monospace;
-		font-size: 0.9em;
-	}
+/* Power LED */
+#next-power-led {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #00b300;
+  box-shadow:
+    0 0 3px  #00cc00,
+    0 0 8px  rgba(0, 204, 0, 0.45),
+    0 0 14px rgba(0, 204, 0, 0.15);
+  flex-shrink: 0;
+  animation: ledPulse 3.5s ease-in-out infinite;
+}
 
-/* Contrast buttons - positioning only.
- * They are invisible (the image is on the layer below) and any interactions are
- * done via JavaScript.
- * Note that these elements are not part of the default page; they are added by
- * JavaScript.  However, as they only have a purpose when JS is enabled, this is not
- * an issue.
- */
-	#ContrastUp,
-	#ContrastDown {
-	/* Use 'absolute' positioning, which uses absolute values relative to the
-	 * containing element (the <body> tag).  As this tag is already sized to the
-	 * main image, all our positioning values should be percentages relative to the
-	 * main computer image.  This way the layout will automatically adjust for any
-	 * browser size.
-	 */
-		position: absolute;
+@keyframes ledPulse {
+  0%,100% { opacity: 1.0; box-shadow: 0 0 3px #00cc00, 0 0 8px rgba(0,204,0,0.45), 0 0 14px rgba(0,204,0,0.15); }
+  50%      { opacity: 0.75; box-shadow: 0 0 2px #009900, 0 0 5px rgba(0,153,0,0.30); }
+}
 
-	/* Set width, height and vertical positioning, which is the same for both
-	 * buttons.  The horizontal position is set for each button, individually.
-	 */
-		bottom: 10%;
-		width: 5%;
-		height: 5.2%;
+/* Knob wrap (knob + label stacked) */
+#next-knob-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
 
-	/* Set a high z-index so trigger areas are always above any graphical
-	 * elements.
-	 */
-		z-index: 1000;
+/* Machined rotary knob */
+#next-brightness-knob {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: ns-resize;
+  flex-shrink: 0;
+  position: relative;
+  will-change: transform;
 
-	/* Show the hand-cursor, to clue the interaction. */
-		cursor: pointer;
-	}
+  background:
+    /* Radial highlight — centre of the knob catches a tiny bit of light */
+    radial-gradient(circle at 38% 33%, #4a4844 0%, #282624 55%, #161412 100%);
+  border: 1px solid #0c0a08;
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.95),
+    0 1px 2px rgba(0,0,0,0.70),
+    inset 0  1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(0,0,0,0.60);
 
-	#ContrastDown {
-		left: 11.5%;
-	}
+  transition: box-shadow 0.12s ease;
+}
 
-	#ContrastUp {
-		left: 17.2%;
-	}
+#next-brightness-knob:hover {
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.95),
+    0 0 8px rgba(255,255,255,0.06),
+    inset 0  1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(0,0,0,0.60);
+}
 
-/* The screen shine is a little extra effect, present in the original animations.
- * Due to the very scant source markup and the fact I've used up all the useful
- * pseudo-elements, this element is added using JavaScript.
- * Therefore, without JavaScript, this little extra touch will be missing.
- */
-	#ScreenShine {
-	/* Use 'absolute' positioning, which uses absolute values relative to the
-	 * containing element (the <body> tag).  As this tag is already sized to the
-	 * main image, all our positioning values should be percentages relative to the
-	 * main computer image.  This way the layout will automatically adjust for any
-	 * browser size.
-	 */
-		position: absolute;
+/* Knurling lines around the perimeter */
+#next-brightness-knob::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(255,255,255,0.04)  0deg  6deg,
+    transparent             6deg 12deg
+  );
+}
 
-		top: 11%;
-		left: 13%;
-		width: 17.2%;
-		height: 14.8%;
+/* Indicator pip */
+#next-brightness-knob::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 5px;
+  background: linear-gradient(180deg, #aaa 0%, #666 100%);
+  border-radius: 1px;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-	/* Bring the element above the text. */
-		z-index: 200;
+#next-knob-label {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 6px;
+  font-weight: 400;
+  color: #282420;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
-	/* Set the image to occupy the whole element. */
-		background-image: url("screenshine.svg");
-		background-repeat: no-repeat;
-		background-position: 0 0;
-	}
+/* ── Stand ────────────────────────────────────────────────── */
+/* Neck — tapered trapezoid */
+#next-stand-neck {
+  width: 96px;
+  height: 26px;
+  background: linear-gradient(180deg, #1e1c18 0%, #141210 100%);
+  clip-path: polygon(22% 0%, 78% 0%, 88% 100%, 12% 100%);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+  position: relative;
+  z-index: -1;
+}
+
+/* Base — wide foot */
+#next-stand-base {
+  width: 280px;
+  height: 18px;
+  background: linear-gradient(180deg,
+    #201e1a 0%,
+    #161412 55%,
+    #0e0c0a 100%
+  );
+  border-radius: 2px 2px 8px 8px;
+  box-shadow:
+    0  6px 24px rgba(0,0,0,0.90),
+    0  2px  8px rgba(0,0,0,0.70),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* ── Power-on boot animation ──────────────────────────────── */
+
+/*
+   Real NeXT monitors would exhibit a momentary white flash
+   then fade to stable luminance. We simulate:
+     1. Screen dark (off)
+     2. Sudden bright white pulse
+     3. CRT raster sweeps top → bottom
+     4. Stabilise to correct brightness
+*/
+
+@keyframes nextScreenOn {
+  0%   { opacity: 0; filter: brightness(0); }
+  15%  { opacity: 1; filter: brightness(4) saturate(0) blur(1px); }
+  30%  { filter: brightness(2.2) saturate(0.1); }
+  55%  { filter: brightness(1.3) saturate(0.5); }
+  80%  { filter: brightness(1.05) saturate(0.85); }
+  100% { filter: brightness(1) saturate(1); }
+}
+
+@keyframes nextRaster {
+  0%   { clip-path: inset(0 0 100% 0); }
+  100% { clip-path: inset(0 0 0%   0); }
+}
+
+/* Power LED off → on */
+@keyframes ledBoot {
+  0%,40%  { opacity: 0; box-shadow: none; background: #002200; }
+  55%     { opacity: 1; background: #00ff00; box-shadow: 0 0 6px #00ff00, 0 0 16px rgba(0,255,0,0.8); }
+  100%    { opacity: 1; }
+}
+
+.next-booting #next-screen-area {
+  animation: nextScreenOn 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.next-booting #next-window {
+  animation: nextRaster 0.55s 0.18s cubic-bezier(0.4, 0.0, 0.2, 1) both;
+}
+
+.next-booting #next-power-led {
+  animation: ledBoot 1.1s forwards;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 640px) {
+  #next-wrapper  { padding: 20px 10px 48px; }
+  #next-model    { display: none; }
+  #next-stand-base { width: 180px; }
+  #next-logo-text { font-size: 12px; }
+  #next-logo-cube { transform: scale(0.85); }
+}
+
+@media (max-width: 420px) {
+  #next-model, #next-logo-cube { display: none; }
+  #next-monitor { padding: 14px 14px 52px 14px; }
+}
